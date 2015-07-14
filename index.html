@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
     <head>
-        <title>test title</title>
+        <title>geovent</title>
         <style type="text/css">
             body 
             {
@@ -24,6 +24,7 @@
             var linksNumbers = [3 , 4 , 4 ,2,2,2,2,2,2,2,2,2,2,2];
             var circles = [[0,0,0]];
             var linkedCircles = [];
+            var redLinkedCircles = [];
             var colors = ["#ff0000"];
             var angleInput = document.getElementById("angle");
             var bufferArray;
@@ -51,6 +52,7 @@
                             90];
             var links;
             var gradientLinks;
+            var redLinks;
             var randomRotation;
             var degToRad = Math.PI/180;
             var radToDeg = 180/Math.PI;
@@ -216,41 +218,12 @@
                     canvas.width = canvas.width;
                     canvasContext.translate(window.innerWidth/2,window.innerHeight/2);
                     var a = 0;
+                    if (gradientLinks.length === 0 && redLinks.length === 0) {
+                        gradientLinks = getLinksToCircle(activeCircle , activeCircle , 1);
+                    }
                     drawLinks ();
-                    gradientLinks = [];
-                    for (u = 0;u < links.length;u++) {
-                        if (links[u][0] == activeCircle) {
-                            gradientLinks.push([links[u][0] , links[u][1]]);
-                        }
-                        else if (links[u][1] == activeCircle) {
-                            gradientLinks.push([links[u][1] , links[u][0]]);
-                        }
-                    }
-                    canvasContext.lineWidth = 10;
-                    for (m = 0; m < gradientLinks.length; m++){
-                        canvasContext.beginPath();
-                        canvasContext.arc(circles[activeCircle][0],circles[activeCircle][1], (screen.height/1000)*timeOnCircle, 0, 2 * Math.PI, false);
-                        canvasContext.closePath();
-                        canvasContext.save();
-                        canvasContext.clip();
-                        canvasContext.beginPath();
-                        canvasContext.moveTo(circles[gradientLinks[m][0]][0], circles[gradientLinks[m][0]][1]);
-                        canvasContext.lineTo(circles[gradientLinks[m][1]][0], circles[gradientLinks[m][1]][1]);
-                        canvasContext.strokeStyle = "red";
-                        canvasContext.stroke();
-                        canvasContext.restore();
-                        if (Math.sqrt((circles[gradientLinks[m][0]][0] - circles[gradientLinks[m][1]][0])*(circles[gradientLinks[m][0]][0] - circles[gradientLinks[m][1]][0]) + (circles[gradientLinks[m][0]][1] - circles[gradientLinks[m][1]][1])*(circles[gradientLinks[m][0]][1] - circles[gradientLinks[m][1]][1])) -(screen.height/1000)*timeOnCircle  <= 1) {
-                            alert("reached destination");
-                            /*for (y = 0;y < links.length;y++) {
-                                if (links[y][0] == gradientLinks[m][1]) {
-                                    gradientLinks.push([links[y][0] , links[y][1]]);
-                                }
-                                else if (links[y][1] == gradientLinks[m][1]) {
-                                    gradientLinks.push([links[y][1] , links[y][0]]);
-                                }
-                            }*/
-                        }
-                    }
+                    drawGradientLinks ();
+                    drawRedLinks ();
                     for (i = 0; i < circleDistribution.length; i++) {
                         for (o = 0; o < circleDistribution[i]; o++) {
                             canvasContext.beginPath();
@@ -302,7 +275,54 @@
                     fillCircles ();
                 }
                 else {
+                    redLinks = [];
+                    gradientLinks = [];
                     timeOnCircle = 0;
+                }
+            }
+            function getLinksToCircle (circle , exception , level) {
+                var linksToCircle = [];
+                for (i = 0; i < links.length;i++) {
+                    if (links[i][0] === circle && links[i][1] !== exception) {
+                        linksToCircle.push([links[i][0] , links[i][1] , level]);
+                    }
+                    else if (links[i][1] === circle && links[i][0] !== exception) {
+                        linksToCircle.push([links[i][1] , links[i][0] , level
+]);
+                    }
+                }
+                return linksToCircle;
+            }
+            function drawGradientLinks () {
+                for (i = 0; i < gradientLinks.length;i++) {
+                    canvasContext.beginPath();
+                    canvasContext.arc(circles[gradientLinks[i][0]][0],circles[gradientLinks[i][0]][1], (screen.height/1000)*(timeOnCircle/gradientLinks[i][2]), 0, 2 * Math.PI, false);
+                    canvasContext.closePath();
+                    canvasContext.save();
+                    canvasContext.clip();
+                    canvasContext.beginPath();
+                    canvasContext.moveTo(circles[gradientLinks[i][0]][0], circles[gradientLinks[i][0]][1]);
+                    canvasContext.lineTo(circles[gradientLinks[i][1]][0], circles[gradientLinks[i][1]][1]);
+                    canvasContext.strokeStyle = "red";
+                    canvasContext.stroke();
+                    canvasContext.restore();
+                    if (Math.sqrt((circles[gradientLinks[i][0]][0] - circles[gradientLinks[i][1]][0])*(circles[gradientLinks[i][0]][0] - circles[gradientLinks[i][1]][0]) + (circles[gradientLinks[i][0]][1] - circles[gradientLinks[i][1]][1])*(circles[gradientLinks[i][0]][1] - circles[gradientLinks[i][1]][1])) -(screen.height/1000)*timeOnCircle  <= 1) {
+                        debugger;
+                        redLinks.push([gradientLinks[i][0],gradientLinks[i][1]]);
+                        gradientLinks.concat(getLinksToCircle(gradientLinks[i][1] , gradientLinks[i][0] , gradientLinks[i][2] + 1));
+                        gradientLinks.splice(i - 1,1);
+                    }
+
+                }
+            }
+            function drawRedLinks () {
+                for (i = 0; i < redLinks.length;i++) {
+                    canvasContext.beginPath();
+                    canvasContext.moveTo(circles[redLinks[i][0]][0], circles[redLinks[i][0]][1]);
+                    canvasContext.lineTo(circles[redLinks[i][1]][0], circles[redLinks[i][1]][1]);
+                    canvasContext.strokeStyle = "red";
+                    canvasContext.stroke();
+                    
                 }
             }
             function fillCircles () {
@@ -342,7 +362,7 @@
                                 document.location.href = circleActions[a];
                             }
                             else {
-                                alert(a);  
+                                alert(a);
                             }
                         }
                         a++;
