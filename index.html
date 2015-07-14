@@ -246,7 +246,7 @@
                 for (i = 0; i < circleDistribution.length; i++) {
                     for (o = 0; o < circleDistribution[i]; o++) {
                         if (Math.sqrt((window.innerWidth/2 + circles[a][0] - event.clientX)*(window.innerWidth/2 + circles[a][0] - event.clientX) + (window.innerHeight/2 + circles[a][1] - event.clientY)*(window.innerHeight/2 + circles[a][1] - event.clientY)) <= screen.height/radii[i]) {
-                            if (circleActions !== null) {
+                            if (circleActions[a] !== null && typeof circleActions[a] !== 'undefined') {
                                 document.location.href = circleActions[a];
                             }
                             else {
