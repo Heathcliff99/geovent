@@ -103,7 +103,6 @@
             function firstInNextSlice (circle) {
                 for (i = 0;i < sliceLength.length;i++) {
                     if (circle < sliceLength[i]) {
-                        //alert(circle[2] + "\n" + sliceLength[i]);
                         return sliceLength[i];
                     }
                 }
@@ -123,9 +122,6 @@
                 for (t = 1; t < linksNumbers.length; t++) {
                     var last = lastInNextSlice (t);
                     var first = firstInNextSlice (t);
-                    //alert("circle: " + t + "\nfirst: " + first + "\nlast: ");
-                    //alert(lastInNextSlice (circles[t]));
-                    //alert(firstInNextSlice (circles[t]));
                     for (o = first;o <= last; o++) {
                         if (!isThiscircleLinked (o)) {
                             distances.push([Math.sqrt((circles[t][0] - circles[o][0])*(circles[t][0] - circles[o][0]) + (circles[t][1] - circles[o][1])*(circles[t][1] - circles[o][1])) , o]);
@@ -133,10 +129,8 @@
                     }
                     distances = distances.sort(function(a, b){return a[0]-b[0];});
                     checkDistancesOrder (distances);
-                    //alert(distances.join('\n'));
                     var currentCircle = 0;
                     var newLinks = 0;
-                    //alert(distances.length);
                     for (u = 0;u < linksNumbers[t];u++){
                         links.push([t,distances[u][1]]);
                         linkedCircles.push(distances[u][1]); 
@@ -222,7 +216,6 @@
                         canvasContext.closePath();
                         canvasContext.save();
                         canvasContext.clip();
-                        //canvasContext.drawImage(images[7],0,0,1000,1000);
                         canvasContext.drawImage(    images[i],
                                                     circles[i][0] - insideRadius,
                                                     circles[i][1] - insideRadius,
@@ -288,12 +281,12 @@
             }
             function invertColor(hexTripletColor) {
                 var color = hexTripletColor;
-                color = color.substring(1);           // remove #
-                color = parseInt(color, 16);          // convert to integer
-                color = 0xFFFFFF ^ color;             // invert three bytes
-                color = color.toString(16);           // convert to hex
-                color = ("000000" + color).slice(-6); // pad with leading zeros
-                color = "#" + color;                  // prepend #
+                color = color.substring(1);
+                color = parseInt(color, 16);
+                color = 0xFFFFFF ^ color;
+                color = color.toString(16);
+                color = ("000000" + color).slice(-6);
+                color = "#" + color;                  
                 return color;
             }
             window.onresize = function(event) {
