@@ -20,6 +20,7 @@
                                         20];
             var links = [];
             var sliceLength = [];
+            var isOnCircle = false;
             var linksNumbers = [3 , 4 , 4 ,2,2,2,2,2,2,2,2,2,2,2];
             var circles = [[0,0,0]];
             var linkedCircles = [];
@@ -31,6 +32,7 @@
             var circleActions = ["index.html"];
             var imagesDrawn = false;
             var activeCircle = null;
+            var timeOnCircle = 0;
             var radii = [   15,
                             20,
                             25,
@@ -48,6 +50,7 @@
                             85,
                             90];
             var links;
+            var gradientLinks;
             var randomRotation;
             var degToRad = Math.PI/180;
             var radToDeg = 180/Math.PI;
@@ -59,7 +62,7 @@
             canvas.height = window.innerHeight;   
             canvasContext.translate(window.innerWidth/2,window.innerHeight/2);
             init();
-            drawMenu();
+            drawMenu(1);
             window.onload = function() {
                 fillCircles ();
             };
@@ -152,60 +155,144 @@
                 }
                 return true;
             }
-            function drawMenu () {
-                canvas.width = canvas.width;
-                canvasContext.translate(window.innerWidth/2,window.innerHeight/2);
-                var a = 0;
-                drawLinks ();
-                for (i = 0; i < circleDistribution.length; i++) {
-                    for (o = 0; o < circleDistribution[i]; o++) {
-                        canvasContext.beginPath();
-                        canvasContext.arc(circles[a][0],circles[a][1], screen.height/radii[i], 0, 2 * Math.PI, false);
-                        canvasContext.fillStyle = colors[a];
-                        canvasContext.fill();
-                        a++;
+            function drawMenu (overload) {
+                if (overload === 1) {
+                    canvas.width = canvas.width;
+                    canvasContext.translate(window.innerWidth/2,window.innerHeight/2);
+                    var a = 0;
+                    drawLinks ();
+                    for (i = 0; i < circleDistribution.length; i++) {
+                        for (o = 0; o < circleDistribution[i]; o++) {
+                            canvasContext.beginPath();
+                            canvasContext.arc(circles[a][0],circles[a][1], screen.height/radii[i], 0, 2 * Math.PI, false);
+                            canvasContext.fillStyle = colors[a];
+                            canvasContext.fill();
+                            a++;
+                        }
                     }
+                    {
+                        {
+                            canvasContext.beginPath();
+                            canvasContext.arc(0,0, screen.height/50, 0, 2 * Math.PI, false);
+                            canvasContext.fillStyle = "white";
+                            canvasContext.fill();
+                        }
+                        {
+                            canvasContext.beginPath();
+                            canvasContext.arc(0,0, screen.height/30, 0, 2 * Math.PI, false);
+                            canvasContext.lineWidth = 10;
+                            canvasContext.strokeStyle = "white";
+                            canvasContext.stroke();
+                        }   
+                        {
+                            canvasContext.beginPath();
+                            canvasContext.moveTo(screen.width/60, 0);
+                            canvasContext.lineTo(screen.width/30, 0);
+                            canvasContext.stroke();
+                        }
+                        {
+                            canvasContext.beginPath();
+                            canvasContext.moveTo(-screen.width/60, 0);
+                            canvasContext.lineTo(-screen.width/30, 0);
+                            canvasContext.stroke();
+                        }
+                        {
+                            canvasContext.beginPath();
+                            canvasContext.moveTo(0, -screen.width/60);
+                            canvasContext.lineTo(0, -screen.width/30);
+                            canvasContext.stroke();
+                        }
+                        {
+                            canvasContext.beginPath();
+                            canvasContext.moveTo(0, screen.width/60);
+                            canvasContext.lineTo(0, screen.width/30);
+                            canvasContext.stroke();
+                        }
+                    }
+                    fillCircles ();
                 }
-                {
-                    {
+                else if (isOnCircle) {
+                    timeOnCircle ++;
+                    canvas.width = canvas.width;
+                    canvasContext.translate(window.innerWidth/2,window.innerHeight/2);
+                    var a = 0;
+                    drawLinks ();
+                    gradientLinks = [];
+                    for (u = 0;u < links.length;u++) {
+                        if (links[u][0] == activeCircle) {
+                            gradientLinks.push([links[u][0] , links[u][1]]);
+                        }
+                        else if (links[u][1] == activeCircle) {
+                            gradientLinks.push([links[u][1] , links[u][0]]);
+                        }
+                    }
+                    canvasContext.lineWidth = 10;
+                    for (m = 0; m < gradientLinks.length; m++){
                         canvasContext.beginPath();
-                        canvasContext.arc(0,0, screen.height/50, 0, 2 * Math.PI, false);
-                        canvasContext.fillStyle = "white";
-                        canvasContext.fill();
+                        canvasContext.arc(circles[activeCircle][0],circles[activeCircle][1], (screen.height/1000)*timeOnCircle, 0, 2 * Math.PI, false);
+                        canvasContext.closePath();
+                        canvasContext.save();
+                        canvasContext.clip();
+                        canvasContext.beginPath();
+                        canvasContext.moveTo(circles[gradientLinks[m][0]][0], circles[gradientLinks[m][0]][1]);
+                        canvasContext.lineTo(circles[gradientLinks[m][1]][0], circles[gradientLinks[m][1]][1]);
+                        canvasContext.strokeStyle = "red";
+                        canvasContext.stroke();
+                        canvasContext.restore();
+                    }
+                    for (i = 0; i < circleDistribution.length; i++) {
+                        for (o = 0; o < circleDistribution[i]; o++) {
+                            canvasContext.beginPath();
+                            canvasContext.arc(circles[a][0],circles[a][1], screen.height/radii[i], 0, 2 * Math.PI, false);
+                            canvasContext.fillStyle = colors[a];
+                            canvasContext.fill();
+                            a++;
+                        }
                     }
                     {
-                        canvasContext.beginPath();
-                        canvasContext.arc(0,0, screen.height/30, 0, 2 * Math.PI, false);
-                        canvasContext.lineWidth = 10;
-                        canvasContext.strokeStyle = "white";
-                        canvasContext.stroke();
-                    }   
-                    {
-                        canvasContext.beginPath();
-                        canvasContext.moveTo(screen.width/60, 0);
-                        canvasContext.lineTo(screen.width/30, 0);
-                        canvasContext.stroke();
+                        {
+                            canvasContext.beginPath();
+                            canvasContext.arc(0,0, screen.height/50, 0, 2 * Math.PI, false);
+                            canvasContext.fillStyle = "white";
+                            canvasContext.fill();
+                        }
+                        {
+                            canvasContext.beginPath();
+                            canvasContext.arc(0,0, screen.height/30, 0, 2 * Math.PI, false);
+                            canvasContext.lineWidth = 10;
+                            canvasContext.strokeStyle = "white";
+                            canvasContext.stroke();
+                        }
+                        {
+                            canvasContext.beginPath();
+                            canvasContext.moveTo(screen.width/60, 0);
+                            canvasContext.lineTo(screen.width/30, 0);
+                            canvasContext.stroke();
+                        }
+                        {
+                            canvasContext.beginPath();
+                            canvasContext.moveTo(-screen.width/60, 0);
+                            canvasContext.lineTo(-screen.width/30, 0);
+                            canvasContext.stroke();
+                        }
+                        {
+                            canvasContext.beginPath();
+                            canvasContext.moveTo(0, -screen.width/60);
+                            canvasContext.lineTo(0, -screen.width/30);
+                            canvasContext.stroke();
+                        }
+                        {
+                            canvasContext.beginPath();
+                            canvasContext.moveTo(0, screen.width/60);
+                            canvasContext.lineTo(0, screen.width/30);
+                            canvasContext.stroke();
+                        }
                     }
-                    {
-                        canvasContext.beginPath();
-                        canvasContext.moveTo(-screen.width/60, 0);
-                        canvasContext.lineTo(-screen.width/30, 0);
-                        canvasContext.stroke();
-                    }
-                    {
-                        canvasContext.beginPath();
-                        canvasContext.moveTo(0, -screen.width/60);
-                        canvasContext.lineTo(0, -screen.width/30);
-                        canvasContext.stroke();
-                    }
-                    {
-                        canvasContext.beginPath();
-                        canvasContext.moveTo(0, screen.width/60);
-                        canvasContext.lineTo(0, screen.width/30);
-                        canvasContext.stroke();
-                    }
+                    fillCircles ();
                 }
-                fillCircles ();
+                else {
+                    timeOnCircle = 0;
+                }
             }
             function fillCircles () {
                 for (i = 0;i < images.length;i++) {
@@ -226,6 +313,7 @@
                 }
             }
             function drawLinks () {
+                canvasContext.lineWidth = 10;
                 for (i = 0; i < links.length; i++){
                     canvasContext.beginPath();
                     canvasContext.moveTo(circles[links[i][0]][0], circles[links[i][0]][1]);
@@ -250,23 +338,24 @@
                     }
                 }
             }
+            setInterval(function() { drawMenu(2); } , 0);
             document.addEventListener( 'mousemove', mousemove, false );
             function mousemove( event ) {
+                isOnCircle = false;
                 var a = 0;
-                var isOnCircle = false;
                 for (i = 0; i < circleDistribution.length; i++) {
                     for (o = 0; o < circleDistribution[i]; o++) {
                         if (Math.sqrt((window.innerWidth/2 + circles[a][0] - event.clientX)*(window.innerWidth/2 + circles[a][0] - event.clientX) + (window.innerHeight/2 + circles[a][1] - event.clientY)*(window.innerHeight/2 + circles[a][1] - event.clientY)) <= screen.height/radii[i]) {
                             isOnCircle = true;
                             if (activeCircle === null) {
                                 colors[a] = invertColor(colors[a]);
-                                drawMenu(); 
+                                drawMenu(1);
                                 activeCircle = a;
                             }
                             else if (activeCircle !== a){
                                 colors[activeCircle] = invertColor(colors[activeCircle]);
                                 colors[a] = invertColor(colors[a]);
-                                drawMenu(); 
+                                drawMenu(1);
                                 activeCircle = a;
                             }
                         }
@@ -276,7 +365,7 @@
                 if (!isOnCircle && activeCircle !== null) {
                     colors[activeCircle] = invertColor(colors[activeCircle]);
                     activeCircle = null;
-                    drawMenu();
+                    drawMenu(1);
                 }
             }
             function invertColor(hexTripletColor) {
@@ -292,7 +381,7 @@
             window.onresize = function(event) {
                 canvas.width = window.innerWidth;
                 canvas.height = window.innerHeight;   
-                drawMenu();
+                drawMenu(1);
             };
         </script>
     </body>
