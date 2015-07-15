@@ -28,9 +28,9 @@
             var colors = ["#ff0000"];
             var angleInput = document.getElementById("angle");
             var bufferArray;
-            var imageLinks = [0,0,0,0,0,0,"1.jpg","2.jpg",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"2.jpg"];
+            var imageLinks = [0,0,0,0,0,0,"images/1.jpg","images/2.jpg",0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,"images/2.jpg"];
             var images = [];
-            var circleActions = ["index.html"];
+            var circleActions = ["index.html",null,null,null,null,null,"selectPicture.html"];
             var imagesDrawn = false;
             var activeCircle = null;
             var timeOnCircle = [];
@@ -72,7 +72,7 @@
                 for (i = 0; i < imageLinks.length; i++) {
                     if (imageLinks[i] !== 0) {
                         var img = new Image();
-                        img.src = "images/" + imageLinks[i];
+                        img.src = imageLinks[i];
                         images.push(img);
                     }
                     else {
