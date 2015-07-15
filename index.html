@@ -51,8 +51,8 @@
                             85,
                             90];
             var links;
-            var gradientLinks;
-            var redLinks;
+            var gradientLinks = [];
+            var redLinks = [];
             var randomRotation;
             var degToRad = Math.PI/180;
             var radToDeg = 180/Math.PI;
@@ -282,13 +282,12 @@
             }
             function getLinksToCircle (circle , exception , level) {
                 var linksToCircle = [];
-                for (i = 0; i < links.length;i++) {
-                    if (links[i][0] === circle && links[i][1] !== exception) {
-                        linksToCircle.push([links[i][0] , links[i][1] , level]);
+                for (cv = 0; cv < links.length;cv++) {
+                    if (links[cv][0] === circle && links[cv][1] !== exception) {
+                        linksToCircle.push([links[cv][0] , links[cv][1] , level]);
                     }
-                    else if (links[i][1] === circle && links[i][0] !== exception) {
-                        linksToCircle.push([links[i][1] , links[i][0] , level
-]);
+                    else if (links[cv][1] === circle && links[cv][0] !== exception) {
+                        linksToCircle.push([links[cv][1] , links[cv][0] , level]);
                     }
                 }
                 return linksToCircle;
@@ -296,9 +295,11 @@
             function drawGradientLinks () {
                 for (i = 0; i < gradientLinks.length;i++) {
                     canvasContext.beginPath();
-                    canvasContext.arc(circles[gradientLinks[i][0]][0],circles[gradientLinks[i][0]][1], (screen.height/1000)*(timeOnCircle/gradientLinks[i][2]), 0, 2 * Math.PI, false);
+                    canvasContext.arc(circles[gradientLinks[i][0]][0],circles[gradientLinks[i][0]][1], (screen.height/1000)*Math.pow(timeOnCircle , 1/gradientLinks[i][2]), 0, 2 * Math.PI, false);
                     canvasContext.closePath();
                     canvasContext.save();
+                    canvasContext.globalAlpha = 0.5;
+                    canvasContext.fill();
                     canvasContext.clip();
                     canvasContext.beginPath();
                     canvasContext.moveTo(circles[gradientLinks[i][0]][0], circles[gradientLinks[i][0]][1]);
@@ -307,10 +308,9 @@
                     canvasContext.stroke();
                     canvasContext.restore();
                     if (Math.sqrt((circles[gradientLinks[i][0]][0] - circles[gradientLinks[i][1]][0])*(circles[gradientLinks[i][0]][0] - circles[gradientLinks[i][1]][0]) + (circles[gradientLinks[i][0]][1] - circles[gradientLinks[i][1]][1])*(circles[gradientLinks[i][0]][1] - circles[gradientLinks[i][1]][1])) -(screen.height/1000)*timeOnCircle  <= 1) {
-                        debugger;
                         redLinks.push([gradientLinks[i][0],gradientLinks[i][1]]);
-                        gradientLinks.concat(getLinksToCircle(gradientLinks[i][1] , gradientLinks[i][0] , gradientLinks[i][2] + 1));
-                        gradientLinks.splice(i - 1,1);
+                        gradientLinks = gradientLinks.concat(getLinksToCircle(gradientLinks[i][1] , gradientLinks[i][0] , gradientLinks[i][2] + 1));
+                        gradientLinks.splice(i,1);
                     }
 
                 }
@@ -369,7 +369,7 @@
                     }
                 }
             }
-            setInterval(function() { drawMenu(2); } , 10);
+            setInterval(function() { drawMenu(2); } , 100);
             document.addEventListener( 'mousemove', mousemove, false );
             function mousemove( event ) {
                 isOnCircle = false;
