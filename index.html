@@ -214,7 +214,6 @@
                     fillCircles ();
                 }
                 else if (isOnCircle) {
-                    incrementTimeOnCircle ();
                     canvas.width = canvas.width;
                     canvasContext.translate(window.innerWidth/2,window.innerHeight/2);
                     var a = 0;
@@ -277,12 +276,7 @@
                 else {
                     redLinks = [];
                     gradientLinks = [];
-                    timeOnCircle = [0];
-                }
-            }
-            function incrementTimeOnCircle () {
-                for (gh = 0;gh < timeOnCircle.length;gh++) {
-                    timeOnCircle[gh]++;
+                    timeOnCircle = [];
                 }
             }
             function getLinksToCircle (circle , exception , level) {
@@ -300,7 +294,8 @@
             function drawGradientLinks () {
                 for (i = 0; i < gradientLinks.length;i++) {
                     canvasContext.beginPath();
-                    canvasContext.arc(circles[gradientLinks[i][0]][0],circles[gradientLinks[i][0]][1], (screen.height/3000)*timeOnCircle[gradientLinks[i][2] - 1], 0, 2 * Math.PI, false);
+                    timeOnCurrentCircle = (Date.now()-timeOnCircle[gradientLinks[i][2] - 1])/5;
+                    canvasContext.arc(circles[gradientLinks[i][0]][0],circles[gradientLinks[i][0]][1], (screen.height/3000)*timeOnCurrentCircle, 0, 2 * Math.PI, false);
                     canvasContext.closePath();
                     canvasContext.save();
                     /*canvasContext.globalAlpha = 0.5;
@@ -312,11 +307,11 @@
                     canvasContext.strokeStyle = "red";
                     canvasContext.stroke();
                     canvasContext.restore();
-                    if (Math.sqrt((circles[gradientLinks[i][0]][0] - circles[gradientLinks[i][1]][0])*(circles[gradientLinks[i][0]][0] - circles[gradientLinks[i][1]][0]) + (circles[gradientLinks[i][0]][1] - circles[gradientLinks[i][1]][1])*(circles[gradientLinks[i][0]][1] - circles[gradientLinks[i][1]][1])) -(screen.height/3000)*timeOnCircle[gradientLinks[i][2] - 1]  <= 1) {
+                    if (Math.sqrt((circles[gradientLinks[i][0]][0] - circles[gradientLinks[i][1]][0])*(circles[gradientLinks[i][0]][0] - circles[gradientLinks[i][1]][0]) + (circles[gradientLinks[i][0]][1] - circles[gradientLinks[i][1]][1])*(circles[gradientLinks[i][0]][1] - circles[gradientLinks[i][1]][1])) -(screen.height/3000)*timeOnCurrentCircle  <= 1) {
                         redLinks.push([gradientLinks[i][0],gradientLinks[i][1]]);
                         gradientLinks = gradientLinks.concat(getLinksToCircle(gradientLinks[i][1] , gradientLinks[i][0] , gradientLinks[i][2] + 1));
                         gradientLinks.splice(i,1);
-                        timeOnCircle.push(0);
+                        timeOnCircle.push(Date.now());
                     }
 
                 }
@@ -385,11 +380,13 @@
                         if (Math.sqrt((window.innerWidth/2 + circles[a][0] - event.clientX)*(window.innerWidth/2 + circles[a][0] - event.clientX) + (window.innerHeight/2 + circles[a][1] - event.clientY)*(window.innerHeight/2 + circles[a][1] - event.clientY)) <= screen.height/radii[i]) {
                             isOnCircle = true;
                             if (activeCircle === null) {
+                                timeOnCircle = [Date.now()];
                                 colors[a] = invertColor(colors[a]);
                                 drawMenu(1);
                                 activeCircle = a;
                             }
                             else if (activeCircle !== a){
+                                timeOnCircle = [Date.now()];
                                 colors[activeCircle] = invertColor(colors[activeCircle]);
                                 colors[a] = invertColor(colors[a]);
                                 drawMenu(1);
