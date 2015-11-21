@@ -25,11 +25,18 @@
                 width: 10px;
             }
             header {
-                background-color: blue;
+                display: block;
+                background-color: brown;
+                width: 100%;
+                height: 90px;
+            }
+            #signIn {
+                text-align: center;
             }
         </style>
     </head>
-    <header>
+    <body>
+        <header>
         <h1>Geovent</h1>
         <div id="logIn">
             <form>
@@ -46,7 +53,13 @@
                 </div>
             </form>
         </div>
-    </header>
-    <body>
+        </header>
+        <div id="signIn">
+            <h2>Sign In:</h2><br><br>
+            <form>
+                <input type="text" name="fName" placeholder="First name">
+                <input type="text" name="lName" placeholder="Last name">
+            </form>
+        </div>
     </body>
 </html>
