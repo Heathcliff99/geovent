@@ -9,11 +9,11 @@
             }
             h1 {
                 position: absolute;
-                left: 50px;
+                left: 70px;
             }
             #logIn {
                 position: absolute;
-                right: 0px;
+                right: 10px;
             }
             form {
                 display: flex;  
@@ -21,18 +21,26 @@
             h3 {
                 text-align: center;
             }
+            #placeholder {
+                width: 10px;
+            }
+            header {
+                background-color: blue;
+            }
         </style>
     </head>
     <header>
         <h1>Geovent</h1>
         <div id="logIn">
-            <!--<h3>Log In:</h3>-->
             <form>
                 <div>
+                    <br>
                     Username<br>
                     <input type="text" name="usrn">
                 </div>
+                <div id="placeholder"></div>
                 <div>
+                    <br>
                     Password<br>
                     <input type="text" name="pwd">
                 </div>
@@ -40,6 +48,5 @@
         </div>
     </header>
     <body>
-        
     </body>
 </html>
